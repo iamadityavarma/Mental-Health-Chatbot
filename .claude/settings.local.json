@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "Bash(rm:*)",
+      "Bash(gradle clean:*)",
+      "Bash(gradle:*)",
+      "Bash(chmod:*)",
+      "Bash(./gradlew:*)",
+      "Bash(mv:*)",
+      "Bash(mkdir:*)",
+      "Bash(pip install:*)",
+      "Bash(pkill:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(docker-compose:*)",
+      "Bash(curl:*)",
+      "Bash(taskkill:*)",
+      "Bash(sed:*)",
+      "Bash(find:*)",
+      "Bash(python:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": [],
+    "additionalDirectories": [
+      "C:\\Users\\Aditya\\AppData\\Local\\Android\\Sdk"
+    ]
+  }
+}

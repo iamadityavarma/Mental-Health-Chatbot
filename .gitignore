@@ -1,0 +1,82 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment variables
+.env
+
+# MLflow
+mlruns/
+mlruns.db
+mlflow.db
+*.db
+
+# Models (large files)
+models/
+*.safetensors
+*.gguf
+*.bin
+*.pth
+*.h5
+*.pkl
+*.joblib
+
+# Android build files
+android/
+android_bot/android/app/build/
+android_bot/android/.gradle/
+android_bot/android/local.properties
+*.apk
+*.aab
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Docker
+.dockerignore
+
+# Large architecture diagrams (if they're very large)
+# architecutre diagram.png
+
+# Temporary files
+tmp/
+temp/
+nul

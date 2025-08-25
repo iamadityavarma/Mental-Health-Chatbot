@@ -1,0 +1,21 @@
+{
+  "total_requests": 5,
+  "successful_requests": 5,
+  "failed_requests": 0,
+  "total_test_time_s": 140.27346420288086,
+  "requests_per_second": 0.035644660438187946,
+  "avg_latency_ms": 51762.6341342926,
+  "p50_latency_ms": 56099.605321884155,
+  "p95_latency_ms": 68221.51765823364,
+  "p99_latency_ms": 68410.95869064331,
+  "max_latency_ms": 68458.31894874573,
+  "min_latency_ms": 16893.4965133667,
+  "avg_tokens_per_second": 4.279227405349761,
+  "max_tokens_per_second": 5.445882676046757,
+  "total_tokens_generated": 1127,
+  "avg_cost_per_request_usd": 0.0004427,
+  "total_cost_usd": 0.0022135,
+  "cost_per_1k_tokens_usd": 0.001964063886424135,
+  "avg_memory_usage_mb": 0.0203125,
+  "peak_memory_usage_mb": 0.1640625
+}

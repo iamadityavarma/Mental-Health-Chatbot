@@ -1,0 +1,12 @@
+requests
+numpy
+pandas
+psutil
+mlflow
+rouge-score
+nltk
+matplotlib
+seaborn
+plotly
+scipy
+scikit-learn

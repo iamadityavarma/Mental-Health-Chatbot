@@ -1,0 +1,40 @@
+# Enhanced TheraBot Web Application Requirements
+# Core web framework
+Flask==2.3.3
+Werkzeug==2.3.7
+
+# HTTP requests
+requests==2.31.0
+
+# MLflow for monitoring and tracking
+mlflow==2.7.1
+
+# Scientific computing
+numpy==1.24.3
+
+# System monitoring
+psutil==5.9.6
+
+# GPU monitoring (optional)
+GPUtil==1.4.0
+
+# Additional monitoring libraries
+py-cpuinfo==9.0.0
+
+# JSON handling (built-in, but explicit for clarity)
+# json - built-in
+
+# Threading and async (built-in)
+# threading - built-in
+# queue - built-in
+
+# Date and time handling (built-in)
+# datetime - built-in
+
+# Operating system interface (built-in)
+# os - built-in
+# platform - built-in
+
+# Development dependencies
+python-dotenv==1.0.0  # For environment variables
+

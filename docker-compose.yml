@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  therabot-webapp:
+    build:
+      context: ./webapp
+      dockerfile: Dockerfile
+    ports:
+      - "8000:5000"
+    volumes:
+      - ./models/int8:/app/models:ro
+      - ollama-data:/root/.ollama
+    environment:
+      - FLASK_ENV=production
+      - FLASK_DEBUG=0
+    networks:
+      - therabot-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Optional: MLflow tracking server for model experiments
+  mlflow-server:
+    image: python:3.11-slim
+    ports:
+      - "8002:5000"
+    volumes:
+      - ./mlruns:/mlflow/mlruns
+      - ./models:/mlflow/models
+    working_dir: /mlflow
+    command: >
+      bash -c "pip install mlflow && 
+               mlflow server 
+               --backend-store-uri sqlite:///mlflow.db 
+               --default-artifact-root ./mlruns 
+               --host 0.0.0.0 
+               --port 5000"
+    networks:
+      - therabot-network
+    restart: unless-stopped
+    profiles:
+      - mlflow
+
+  # Optional: Nginx reverse proxy for production
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - therabot-webapp
+    networks:
+      - therabot-network
+    restart: unless-stopped
+    profiles:
+      - production
+
+volumes:
+  ollama-data:
+    driver: local
+
+networks:
+  therabot-network:
+    driver: bridge

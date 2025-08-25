@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TheraBot Chat</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .chat-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1), 0 0 0 1px rgba(255,255,255,0.2);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, #2196F3 0%, #21CBF3 100%);
+            color: white;
+            padding: 32px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chat-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .chat-header h1 {
+            margin: 0 0 8px 0;
+            font-size: 2.2em;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .chat-header p {
+            margin: 0;
+            font-size: 1.1em;
+            opacity: 0.9;
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .chat-messages {
+            height: 500px;
+            overflow-y: auto;
+            padding: 24px;
+            background: linear-gradient(to bottom, rgba(247,250,252,0.8), rgba(255,255,255,0.9));
+        }
+        
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+            border-radius: 3px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.2);
+            border-radius: 3px;
+        }
+        
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .message-content {
+            max-width: 75%;
+            padding: 16px 20px;
+            border-radius: 18px;
+            font-size: 15px;
+            line-height: 1.5;
+            word-wrap: break-word;
+            position: relative;
+        }
+        
+        .user-message {
+            justify-content: flex-end;
+        }
+        
+        .user-message .message-content {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+        }
+        
+        .bot-message {
+            justify-content: flex-start;
+        }
+        
+        .bot-message .message-content {
+            background: white;
+            color: #2d3748;
+            border: 1px solid rgba(0,0,0,0.08);
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin: 0 12px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .user-avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .bot-avatar {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+        
+        .input-container {
+            padding: 24px;
+            background: rgba(255,255,255,0.9);
+            border-top: 1px solid rgba(0,0,0,0.06);
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+        
+        .message-input {
+            flex: 1;
+            padding: 14px 20px;
+            border: 2px solid rgba(0,0,0,0.08);
+            border-radius: 24px;
+            font-size: 15px;
+            font-family: inherit;
+            background: white;
+            transition: all 0.2s ease;
+            resize: none;
+            min-height: 48px;
+            max-height: 120px;
+        }
+        
+        .message-input:focus {
+            outline: none;
+            border-color: #2196F3;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+        
+        .send-button {
+            padding: 14px 20px;
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            border: none;
+            border-radius: 24px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+        }
+        
+        .send-button:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(33, 150, 243, 0.4);
+        }
+        
+        .send-button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        
+        .send-button:disabled {
+            background: #e0e0e0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .error {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            color: white;
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin: 16px 0;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+            border: none;
+        }
+        
+        .typing-indicator {
+            color: #64748b;
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .typing-dots span {
+            width: 6px;
+            height: 6px;
+            background: #64748b;
+            border-radius: 50%;
+            animation: typing 1.4s ease-in-out infinite;
+        }
+        
+        .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.5;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+        
+        #streaming-message {
+            min-height: 20px;
+        }
+        
+        /* Crisis alert styling */
+        .crisis-alert {
+            background: linear-gradient(135deg, #ff4757 0%, #ff3838 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 16px 0;
+            box-shadow: 0 6px 20px rgba(255, 71, 87, 0.3);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        
+        .crisis-resources {
+            background: rgba(255,255,255,0.1);
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+        
+        .crisis-resources ul {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+        
+        .crisis-resources li {
+            margin: 4px 0;
+            font-weight: 500;
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .chat-container {
+                border-radius: 16px;
+            }
+            
+            .chat-header {
+                padding: 24px 20px;
+            }
+            
+            .chat-header h1 {
+                font-size: 1.8em;
+            }
+            
+            .chat-messages {
+                height: 400px;
+                padding: 16px;
+            }
+            
+            .message-content {
+                max-width: 85%;
+                padding: 12px 16px;
+            }
+            
+            .input-container {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>TheraBot Chat</h1>
+            <p>Your AI Therapeutic Assistant</p>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message">
+                <div class="avatar bot-avatar">TB</div>
+                <div class="message-content">
+                    Hello! I'm TheraBot, your AI therapeutic assistant. I'm here to provide supportive guidance and help you work through whatever you're facing. How can I help you today?
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-container">
+            <input type="text" id="messageInput" class="message-input" placeholder="Type your message here..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()" id="sendButton" class="send-button">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+
+        function addMessage(message, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            
+            // Create avatar
+            const avatar = document.createElement('div');
+            avatar.className = `avatar ${isUser ? 'user-avatar' : 'bot-avatar'}`;
+            avatar.textContent = isUser ? 'You' : 'TB';
+            
+            // Create message content
+            const content = document.createElement('div');
+            content.className = 'message-content';
+            content.textContent = message;
+            
+            // Append elements based on message type
+            if (isUser) {
+                messageDiv.appendChild(content);
+                messageDiv.appendChild(avatar);
+            } else {
+                messageDiv.appendChild(avatar);
+                messageDiv.appendChild(content);
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function addLoadingMessage() {
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message bot-message loading';
+            loadingDiv.id = 'loading';
+            loadingDiv.textContent = 'TheraBot is thinking...';
+            chatMessages.appendChild(loadingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function removeLoadingMessage() {
+            const loadingDiv = document.getElementById('loading');
+            if (loadingDiv) {
+                loadingDiv.remove();
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            errorDiv.textContent = `Error: ${message}`;
+            chatMessages.appendChild(errorDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            // Add user message
+            addMessage(message, true);
+            messageInput.value = '';
+            
+            // Disable input
+            sendButton.disabled = true;
+            messageInput.disabled = true;
+            
+            // Create streaming message container
+            const streamingMessageDiv = document.createElement('div');
+            streamingMessageDiv.className = 'message bot-message';
+            streamingMessageDiv.id = 'streaming-message';
+            
+            // Create avatar
+            const avatar = document.createElement('div');
+            avatar.className = 'avatar bot-avatar';
+            avatar.textContent = 'TB';
+            
+            // Create message content with typing indicator
+            const content = document.createElement('div');
+            content.className = 'message-content';
+            content.innerHTML = '<div class="typing-indicator">TheraBot is typing<div class="typing-dots"><span></span><span></span><span></span></div></div>';
+            
+            streamingMessageDiv.appendChild(avatar);
+            streamingMessageDiv.appendChild(content);
+            chatMessages.appendChild(streamingMessageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: message })
+                });
+
+                if (response.ok) {
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+                    let accumulatedText = '';
+                    
+                    // Remove typing indicator and set up for streaming
+                    content.innerHTML = '';
+
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        
+                        if (done) break;
+                        
+                        const chunk = decoder.decode(value);
+                        const lines = chunk.split('\n');
+                        
+                        for (const line of lines) {
+                            if (line.startsWith('data: ')) {
+                                try {
+                                    const data = JSON.parse(line.slice(6));
+                                    
+                                    if (data.error) {
+                                        streamingMessageDiv.remove();
+                                        showError(data.error);
+                                        break;
+                                    }
+                                    
+                                    if (data.chunk) {
+                                        accumulatedText += data.chunk;
+                                        content.textContent = accumulatedText;
+                                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                                    }
+                                    
+                                    if (data.done) {
+                                        streamingMessageDiv.id = ''; // Remove streaming ID
+                                        break;
+                                    }
+                                } catch (e) {
+                                    // Skip invalid JSON lines
+                                    continue;
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    streamingMessageDiv.remove();
+                    const errorData = await response.json();
+                    showError(errorData.error || 'Failed to get response');
+                }
+            } catch (error) {
+                const streamingMsg = document.getElementById('streaming-message');
+                if (streamingMsg) streamingMsg.remove();
+                showError('Connection failed. Make sure Ollama is running.');
+            }
+
+            // Re-enable input
+            sendButton.disabled = false;
+            messageInput.disabled = false;
+            messageInput.focus();
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // Focus on input when page loads
+        messageInput.focus();
+    </script>
+</body>
+</html>
